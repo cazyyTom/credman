@@ -1,0 +1,26 @@
+# Local PostgreSQL 18. The one command between a clone and a working database.
+#
+#   docker compose up -d
+#
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: credman-db
+    environment:
+      POSTGRES_USER: credman
+      POSTGRES_PASSWORD: ******************
+      POSTGRES_DB: credman
+    ports:
+      - "5432:5432"
+    volumes:
+      - credman-data:/var/lib/postgresql/data
+    healthcheck:
+      # The seed script runs immediately after `up`, so waiting for a real
+      # readiness signal matters more than usual here.
+      test: ["CMD-SHELL", "pg_isready -U credman -d credman"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  credman-data:
