@@ -15,7 +15,7 @@ from app.config import settings
 from app.db import healthcheck, pool
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
-log = logging.getLogger("spendbook")
+log = logging.getLogger("credman")
 
 
 @asynccontextmanager
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Spendbook API",
+    title="CredMan API",
     version="1.0.0",
     description="Transactions, spend analytics and reward coins.",
     lifespan=lifespan,
