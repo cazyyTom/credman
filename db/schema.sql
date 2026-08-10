@@ -20,8 +20,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 -- ---------------------------------------------------------------------------
 -- Enumerations
--- The source data contains 'success' alongside 'SUCCESS'. An enum makes that
--- impossible to store two ways: the seed must fold case before insert.
 -- ---------------------------------------------------------------------------
 CREATE TYPE txn_status        AS ENUM ('SUCCESS', 'FAILED', 'PENDING');
 CREATE TYPE payment_method    AS ENUM ('Credit Card', 'Debit Card', 'Netbanking', 'UPI');
@@ -29,9 +27,6 @@ CREATE TYPE redemption_status AS ENUM ('CONFIRMED', 'REVERSED');
 
 -- ---------------------------------------------------------------------------
 -- Lookup tables
--- 49 merchants and 10 categories across 10k rows. Normalising them keeps the
--- fact table narrow, gives the category filter a cheap DISTINCT source, and
--- means merchant search hits 49 rows instead of 10,000.
 -- ---------------------------------------------------------------------------
 CREATE TABLE categories (
     id    smallserial PRIMARY KEY,
@@ -43,17 +38,14 @@ CREATE TABLE merchants (
     name  text NOT NULL UNIQUE
 );
 
--- Trigram index so ILIKE '%stark%' on merchant search stays index-assisted.
+
 CREATE INDEX merchants_name_trgm_idx ON merchants USING gin (name gin_trgm_ops);
 
 -- ---------------------------------------------------------------------------
 -- Transactions (fact table)
 -- ---------------------------------------------------------------------------
 CREATE TABLE transactions (
-    -- Surrogate key. external_id is deliberately NOT unique: the source data
-    -- has 40 IDs shared by two genuinely different transactions (different
-    -- merchant, amount and date). Making it unique would silently delete real
-    -- spend, so we keep both rows and flag the collision instead.
+    
     id            bigserial PRIMARY KEY,
     external_id   text        NOT NULL,
 
@@ -61,9 +53,7 @@ CREATE TABLE transactions (
 
     merchant_id   smallint    NOT NULL REFERENCES merchants(id),
 
-    -- Nullable on purpose. 200 rows arrive with no usable category (150 null,
-    -- 50 empty string). NULL is the single honest representation of "unknown";
-    -- the UI renders it as "Uncategorised" rather than inventing a bucket.
+   
     category_id   smallint             REFERENCES categories(id),
 
     amount        numeric(14,2) NOT NULL,
@@ -71,13 +61,11 @@ CREATE TABLE transactions (
     status        txn_status     NOT NULL,
     payment_method payment_method NOT NULL,
 
-    -- Data-quality flags, set by the seed. These let the API exclude noise from
-    -- analytics by default without throwing rows away.
+
     is_refund              boolean NOT NULL DEFAULT false,
     is_amount_outlier      boolean NOT NULL DEFAULT false,
     has_duplicate_external_id boolean NOT NULL DEFAULT false,
-    -- Original timestamp string/number, kept so a reviewer can audit any
-    -- conversion we made. Cheap, and it makes the normalisation falsifiable.
+
     raw_timestamp          text,
 
     -- The reward rule, expressed once, in the database.
