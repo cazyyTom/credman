@@ -6,7 +6,7 @@ backend, PostgreSQL.
 
 Built as a take-home for Digital Alpha Technologies.
 
- · walkthrough video `<URL>`
+ · walkthrough video `https://drive.google.com/drive/folders/14HrSVKZN4CXII6A1pSAvXawETY6XlGtY?usp=sharing`
 
 ---
 
