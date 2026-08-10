@@ -68,15 +68,7 @@ CREATE TABLE transactions (
 
     raw_timestamp          text,
 
-    -- The reward rule, expressed once, in the database.
-    -- 1 coin per full Rs.100, only on successful non-refund spend, capped at
-    -- 100 coins per transaction (see ASSUMPTIONS.md for the cap).
-    --
-    -- Outliers earn nothing. They are amounts we believe are data errors, and
-    -- paying reward coins on a payment we do not believe happened is wrong. It
-    -- also keeps the coin balance consistent with the analytics totals, which
-    -- exclude outliers by default - otherwise the rewards panel and the payments
-    -- footer show two different "coins earned" figures 300 apart.
+    
     coins_earned integer NOT NULL GENERATED ALWAYS AS (
         CASE
             WHEN status = 'SUCCESS' AND amount > 0 AND is_amount_outlier = false
@@ -88,8 +80,7 @@ CREATE TABLE transactions (
     CONSTRAINT transactions_currency_inr CHECK (currency = 'INR')
 );
 
--- Indexes chosen against the actual filter matrix the UI sends.
--- Default sort is newest-first, so occurred_at DESC leads.
+-- 
 CREATE INDEX transactions_occurred_at_idx  ON transactions (occurred_at DESC);
 CREATE INDEX transactions_amount_idx       ON transactions (amount);
 CREATE INDEX transactions_category_idx     ON transactions (category_id);
@@ -101,10 +92,7 @@ CREATE INDEX transactions_external_id_idx  ON transactions (external_id);
 
 -- ---------------------------------------------------------------------------
 -- Account
--- Single-user app (see ASSUMPTIONS.md), so exactly one row. It exists to give
--- the redeem path a row to lock: concurrent redeems serialise on
--- SELECT ... FOR UPDATE here, which is what stops two requests both passing an
--- affordability check against the same balance.
+
 -- ---------------------------------------------------------------------------
 CREATE TABLE accounts (
     id           smallint PRIMARY KEY DEFAULT 1,
@@ -129,9 +117,7 @@ CREATE TABLE rewards (
 );
 
 -- ---------------------------------------------------------------------------
--- Redemptions (the debit side of the coin ledger)
--- coin_cost is copied in, not read through the FK: repricing a reward next
--- month must not retroactively change what a past redemption cost.
+-- 
 -- ---------------------------------------------------------------------------
 CREATE TABLE redemptions (
     id         bigserial PRIMARY KEY,
@@ -149,8 +135,7 @@ CREATE INDEX redemptions_account_idx ON redemptions (account_id, created_at DESC
 
 -- ---------------------------------------------------------------------------
 -- Coin balance
--- Derived, never stored. A cached integer balance is the classic place for
--- money bugs to hide; deriving it means the ledger is the only truth.
+
 -- ---------------------------------------------------------------------------
 CREATE VIEW v_coin_balance AS
 SELECT
