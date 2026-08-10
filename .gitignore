@@ -23,3 +23,6 @@ next-env.d.ts
 Thumbs.db
 .idea/
 .vscode/
+
+#Docker
+docker-compose.yml
