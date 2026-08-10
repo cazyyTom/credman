@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Credman - design tokens
+
+   Direction: "passbook". A credit card statement is a ledger, so the UI borrows
+   from one - hairline rules, tabular figures, right-aligned money, a stamped
+   feel for status. Reward coins are brass, because they are coins.
+
+   Everything below is a token. No component hard-codes a colour, space or size.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap");
+
+:root {
+  /* --- Colour ------------------------------------------------------------ */
+  /* Ink, not black. A blue-black like statement paper under lamplight. */
+  --ink-900: #0d1219;
+  --ink-850: #121822;
+  --ink-800: #171f2b;
+  --ink-750: #1d2634;
+  --ink-700: #26313f;
+  --ink-600: #33404f;
+
+  /* Brass. Reserved for coins and nothing else, so it always means "reward". */
+  --brass-500: #c9942f;
+  --brass-400: #dfa93c;
+  --brass-300: #efc571;
+  --brass-glow: rgba(223, 169, 60, 0.16);
+
+  /* Ledger ink for actions. Indigo, kept quiet next to the brass. */
+  --indigo-500: #4f5bd5;
+  --indigo-400: #6b76e8;
+  --indigo-300: #949cf2;
+
+  --paper-50: #f2f4f8;
+  --paper-200: #cdd4e0;
+  --paper-400: #8b96a8;
+  --paper-500: #6c7688;
+
+  /* Status. Stamped chips, so these read as marks rather than decoration. */
+  --ok-400: #45b98a;
+  --ok-bg: rgba(69, 185, 138, 0.12);
+  --wait-400: #dfa93c;
+  --wait-bg: rgba(223, 169, 60, 0.12);
+  --fail-400: #e4685c;
+  --fail-bg: rgba(228, 104, 92, 0.12);
+
+  /* Chart ramp. Ordered by luminance so adjacent slices stay distinguishable
+     for a viewer who cannot separate the hues. */
+  --chart-1: #6b76e8;
+  --chart-2: #4fb3d9;
+  --chart-3: #45b98a;
+  --chart-4: #8ec06a;
+  --chart-5: #dfa93c;
+  --chart-6: #e08a4a;
+  --chart-7: #e4685c;
+  --chart-8: #d4629b;
+  --chart-9: #9a6ce0;
+  --chart-10: #5f8fd9;
+  --chart-null: #4a5666;
+
+  /* --- Type -------------------------------------------------------------- */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  /* Real monospace for money. Tabular figures are the point: columns of digits
+     have to line up vertically or a ledger is unreadable. */
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.5rem;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+
+  /* --- Space ------------------------------------------------------------- */
+  /* 4px base. Every gap and pad is one of these. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* --- Form -------------------------------------------------------------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+
+  --rule: 1px solid var(--ink-700);
+  --rule-strong: 1px solid var(--ink-600);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-pop: 0 16px 48px rgba(0, 0, 0, 0.55);
+
+  --z-drawer: 40;
+  --z-modal: 50;
+
+  --dur-fast: 120ms;
+  --dur-med: 220ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* --- Reset ---------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--ink-900);
+  color: var(--paper-50);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  /* Faint ruled-paper texture. The signature detail: horizontal hairlines at the
+     row rhythm, so the whole page reads as one continuous ledger sheet. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 43px,
+    rgba(255, 255, 255, 0.012) 43px,
+    rgba(255, 255, 255, 0.012) 44px
+  );
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* --- Focus ---------------------------------------------------------------- */
+/* One visible focus treatment everywhere. Never removed, only replaced. */
+:focus-visible {
+  outline: 2px solid var(--indigo-300);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* --- Utilities ------------------------------------------------------------ */
+.mono {
+  font-family: var(--font-mono);
+  /* Without this, digits have different widths and money columns wobble. */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Motion --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Scrollbar ------------------------------------------------------------ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-600) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--ink-600);
+  border-radius: var(--radius-full);
+  border: 3px solid var(--ink-900);
+}
