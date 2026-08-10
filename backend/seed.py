@@ -251,7 +251,7 @@ def verify(conn: psycopg.Connection, normalised_sample: list[dict[str, Any]]) ->
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed the Spendbook database.")
+    parser = argparse.ArgumentParser(description="Seed the CredMan database.")
     parser.add_argument("--file", type=pathlib.Path, default=DEFAULT_DATA)
     parser.add_argument(
         "--keep-schema",

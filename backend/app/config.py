@@ -17,7 +17,7 @@ class Settings:
     database_url: str = field(
         default_factory=lambda: os.getenv(
             "DATABASE_URL",
-            "postgresql://spendbook:ab7a8d51eb4863250ace6ca3b08231be51212f186c78eee623bfc19872605f64@localhost:5432/spendbook",
+            "postgresql://credman:ab7a8d51eb4863250ace6ca3b08231be51212f186c78eee623bfc19872605f64@localhost:5432/credman",
         )
     )
     cors_origins: list[str] = field(default_factory=_cors_origins)
