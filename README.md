@@ -45,25 +45,37 @@ Needs Docker (or any Postgres 16+), Python 3.11+, and Node 20+.
 git clone https://github.com/cazyyTom/credman && cd CredMan
 ```
 
-### 1. Database
+### 1. Secrets (`.env`)
+
+Nothing secret is committed. The backend refuses to start without `DATABASE_URL`,
+and docker compose refuses to start without `POSTGRES_PASSWORD`.
 
 ```bash
-contains docker.compose.example, coty that and make your own
+cp .env.example .env
+python -c "import secrets; print(secrets.token_urlsafe(32))"   # use this as the password
 ```
 
-Postgres 18 on `localhost:5432`, database/user/password all `credman`.
+Open `.env` and put that password in **both** `POSTGRES_PASSWORD` and the password
+part of `DATABASE_URL`. `.env` is gitignored; keep it that way.
 
-Already have Postgres? Skip this and point `DATABASE_URL` at it instead.
+### 2. Database
 
-### 2. Backend and seed
+```bash
+docker compose up -d
+```
+
+Postgres on `localhost:5432`, database and user `credman`, password from your `.env`.
+
+Already have Postgres? Skip this and point `DATABASE_URL` in `.env` at it instead.
+
+### 3. Backend and seed
 
 ```bash
 cd backend
 python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
 
-python seed.py
+python seed.py                                       # reads ../.env automatically
 ```
 
 **`python seed.py` is the one command.** It creates the schema, normalises and
@@ -100,7 +112,7 @@ uvicorn app.main:app --reload
 
 → `http://localhost:8000` · interactive docs at `/docs`
 
-### 3. Frontend
+### 4. Frontend
 
 ```bash
 cd ../frontend
@@ -114,7 +126,7 @@ npm run dev
 ### Tests
 
 ```bash
-cd backend && pytest        # 33 tests, no database needed
+cd backend && pytest        # no running database needed, but DATABASE_URL must be set (.env is enough)
 ```
 
 ---

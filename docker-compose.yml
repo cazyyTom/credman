@@ -1,5 +1,6 @@
 # Local PostgreSQL 18. The one command between a clone and a working database.
 #
+#   cp .env.example .env   # then set POSTGRES_PASSWORD and DATABASE_URL
 #   docker compose up -d
 #
 services:
@@ -8,7 +9,7 @@ services:
     container_name: credman-db
     environment:
       POSTGRES_USER: credman
-      POSTGRES_PASSWORD: ******************
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is not set}
       POSTGRES_DB: credman
     ports:
       - "5432:5432"
